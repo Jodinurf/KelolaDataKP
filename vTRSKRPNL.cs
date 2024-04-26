@@ -209,13 +209,10 @@ namespace KelolaDataKP
                     cmd.Parameters.AddWithValue(parameter, newFileDOC);
             }
 
-            // Tambahkan parameter untuk NIM
             cmd.Parameters.AddWithValue("@nim", nim);
 
-            // Eksekusi command SQL
             int rowsAffected = cmd.ExecuteNonQuery();
 
-            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
@@ -240,7 +237,11 @@ namespace KelolaDataKP
                 Console.WriteLine("Hasil Pencarian:\n");
                 while (reader.Read())
                 {
-                    Console.WriteLine($"NIM: {reader["nim"]}, Jumlah SKS: {reader["jumlahSKS"]}, File DOC: {reader["fileDOC"]}");
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        Console.WriteLine(reader.GetValue(i));
+                    }
+                    Console.WriteLine();
                 }
             }
             else
