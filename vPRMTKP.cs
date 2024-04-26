@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -190,17 +191,54 @@ namespace KelolaDataKP
 
         public void update(string kdSrtKP, string newNamaPenerima, string newTugas, string newFileDOC, SqlConnection con)
         {
-            string str = "UPDATE PermintaanKP SET NamaPenerima = @newNamaPenerima, Tugas = @newTugas, fileDOC = @newFileDOC WHERE KD_SrtKP = @kdSrtKP";
+            // Buat query untuk update
+            string str = "UPDATE PermintaanKP SET ";
+            List<string> parameters = new List<string>();
+
+            if (!string.IsNullOrEmpty(newNamaPenerima))
+            {
+                str += "NamaPenerima = @newNamaPenerima, ";
+                parameters.Add("@newNamaPenerima");
+            }
+
+            if (!string.IsNullOrEmpty(newTugas))
+            {
+                str += "Tugas = @newTugas, ";
+                parameters.Add("@newTugas");
+            }
+
+            if (!string.IsNullOrEmpty(newFileDOC))
+            {
+                str += "fileDOC = @newFileDOC, ";
+                parameters.Add("@newFileDOC");
+            }
+
+            str = str.TrimEnd(',', ' ');
+
+            str += " WHERE KD_SrtKP = @kdSrtKP";
+
+            // Buat command SQL
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            cmd.Parameters.AddWithValue("@newNamaPenerima", newNamaPenerima);
-            cmd.Parameters.AddWithValue("@newTugas", newTugas);
-            cmd.Parameters.AddWithValue("@newFileDOC", newFileDOC);
+            // Tambahkan parameter baru sesuai dengan data yang diinputkan
+            foreach (string parameter in parameters)
+            {
+                if (parameter == "@newNamaPenerima")
+                    cmd.Parameters.AddWithValue(parameter, newNamaPenerima);
+                else if (parameter == "@newTugas")
+                    cmd.Parameters.AddWithValue(parameter, newTugas);
+                else if (parameter == "@newFileDOC")
+                    cmd.Parameters.AddWithValue(parameter, newFileDOC);
+            }
+
+            // Tambahkan parameter untuk KD Surat KP
             cmd.Parameters.AddWithValue("@kdSrtKP", kdSrtKP);
 
+            // Eksekusi command SQL
             int rowsAffected = cmd.ExecuteNonQuery();
 
+            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
@@ -210,6 +248,7 @@ namespace KelolaDataKP
                 Console.WriteLine("Data tidak ditemukan atau gagal diupdate.");
             }
         }
+
 
         public void searchByKdSrtKP(string kdSrtKP, SqlConnection con)
         {
