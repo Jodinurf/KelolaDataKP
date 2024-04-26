@@ -256,7 +256,11 @@ namespace KelolaDataKP
                 Console.WriteLine("Hasil Pencarian:\n");
                 while (reader.Read())
                 {
-                    Console.WriteLine($"ID Laporan: {reader["ID_Laporan"]}, NIM: {reader["nim"]}, NIK Dosen: {reader["NIK"]}, Tanggal: {reader["Tanggal"]}, File DOC: {reader["fileDOC"]}");
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        Console.WriteLine(reader.GetValue(i));
+                    }
+                    Console.WriteLine();
                 }
             }
             else
