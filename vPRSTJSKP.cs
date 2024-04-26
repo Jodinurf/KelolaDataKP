@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -195,17 +196,52 @@ namespace KelolaDataKP
 
         public void update(string kdPersetujuan, string newStatus, string newNamaDosen, DateTime newJadwalSKP, SqlConnection con)
         {
-            string str = "UPDATE PersetujuanSKP SET status = @newStatus, namaDSN = @newNamaDosen, JadwalSKP = @newJadwalSKP WHERE KD_Persetujuan = @kdPersetujuan";
+            // Buat query untuk update
+            string str = "UPDATE PersetujuanSKP SET ";
+            List<string> parameters = new List<string>();
+
+            if (!string.IsNullOrEmpty(newStatus))
+            {
+                str += "status = @newStatus, ";
+                parameters.Add("@newStatus");
+            }
+            if (!string.IsNullOrEmpty(newNamaDosen))
+            {
+                str += "namaDSN = @newNamaDosen, ";
+                parameters.Add("@newNamaDosen");
+            }
+            if (newJadwalSKP != DateTime.MinValue)
+            {
+                str += "JadwalSKP = @newJadwalSKP, ";
+                parameters.Add("@newJadwalSKP");
+            }
+
+            str = str.TrimEnd(',', ' ');
+
+            str += " WHERE KD_Persetujuan = @kdPersetujuan";
+
+            // Buat command SQL
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            cmd.Parameters.AddWithValue("@newStatus", newStatus);
-            cmd.Parameters.AddWithValue("@newNamaDosen", newNamaDosen);
-            cmd.Parameters.AddWithValue("@newJadwalSKP", newJadwalSKP);
+            // Tambahkan parameter baru sesuai dengan data yang diinputkan
+            foreach (string parameter in parameters)
+            {
+                if (parameter == "@newStatus")
+                    cmd.Parameters.AddWithValue(parameter, newStatus);
+                else if (parameter == "@newNamaDosen")
+                    cmd.Parameters.AddWithValue(parameter, newNamaDosen);
+                else if (parameter == "@newJadwalSKP")
+                    cmd.Parameters.AddWithValue(parameter, newJadwalSKP);
+            }
+
+            // Tambahkan parameter untuk KD Persetujuan
             cmd.Parameters.AddWithValue("@kdPersetujuan", kdPersetujuan);
 
+            // Eksekusi command SQL
             int rowsAffected = cmd.ExecuteNonQuery();
 
+            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
@@ -215,6 +251,7 @@ namespace KelolaDataKP
                 Console.WriteLine("Data tidak ditemukan atau gagal diupdate.");
             }
         }
+
 
         public void searchByKdPersetujuan(string kdPersetujuan, SqlConnection con)
         {
