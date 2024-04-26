@@ -66,7 +66,7 @@ namespace KelolaDataKP
                                     break;
                                 case '3':
                                     Console.Clear();
-                                    Console.WriteLine("Masukkan Data Mahasiswa ingin dihapus:\n");
+                                    Console.WriteLine("Masukkan Data Mahasiswa ingin dihapus berdasar NIM:\n");
                                     string nimHapus = Console.ReadLine();
                                     try
                                     {
@@ -274,7 +274,11 @@ namespace KelolaDataKP
                 Console.WriteLine("Hasil Pencarian:\n");
                 while (reader.Read())
                 {
-                    Console.WriteLine($"NIM: {reader["nim"]}, Nama: {reader["nama"]}, Email: {reader["email"]}, No HP: {reader["NoHP"]}, Jenis Kelamin: {reader["JenisKelamin"]}");
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        Console.WriteLine(reader.GetValue(i));
+                    }
+                    Console.WriteLine();
                 }
             }
             else
