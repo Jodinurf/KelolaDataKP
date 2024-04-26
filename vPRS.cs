@@ -200,7 +200,6 @@ namespace KelolaDataKP
 
         public void update(int kdPerusahaan, string newNamaPerusahaan, string newTelephone, string newAlamat, SqlConnection con)
         {
-            // Buat query untuk update
             string str = "UPDATE Perusahaan SET ";
             List<string> parameters = new List<string>();
 
@@ -224,11 +223,9 @@ namespace KelolaDataKP
 
             str += " WHERE kd_Perusahaan = @kdPerusahaan";
 
-            // Buat command SQL
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            // Tambahkan parameter baru sesuai dengan data yang diinputkan
             foreach (string parameter in parameters)
             {
                 if (parameter == "@newNamaPerusahaan")
@@ -239,13 +236,10 @@ namespace KelolaDataKP
                     cmd.Parameters.AddWithValue(parameter, newAlamat);
             }
 
-            // Tambahkan parameter untuk Kode Perusahaan
             cmd.Parameters.AddWithValue("@kdPerusahaan", kdPerusahaan);
 
-            // Eksekusi command SQL
             int rowsAffected = cmd.ExecuteNonQuery();
 
-            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
