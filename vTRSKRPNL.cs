@@ -177,7 +177,6 @@ namespace KelolaDataKP
 
         public void update(string nim, string newJumlahSKS, string newFileDOC, SqlConnection con)
         {
-            // Buat query untuk update
             string str = "UPDATE transkrip_Nilai SET ";
             List<string> parameters = new List<string>();
 
@@ -196,11 +195,9 @@ namespace KelolaDataKP
 
             str += " WHERE nim = @nim";
 
-            // Buat command SQL
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            // Tambahkan parameter baru sesuai dengan data yang diinputkan
             foreach (string parameter in parameters)
             {
                 if (parameter == "@newJumlahSKS")

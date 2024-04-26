@@ -1,0 +1,7 @@
+C:\Users\Lenovo\Documents\Semester 4\PABD\Praktikum\KelolaDataKP\KelolaDataKP\KelolaDataKP\obj\Debug\KelolaDataKP.csproj.AssemblyReference.cache
+C:\Users\Lenovo\Documents\Semester 4\PABD\Praktikum\KelolaDataKP\KelolaDataKP\KelolaDataKP\obj\Debug\KelolaDataKP.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\Documents\Semester 4\PABD\Praktikum\KelolaDataKP\KelolaDataKP\KelolaDataKP\bin\Debug\KelolaDataKP.exe.config
+C:\Users\Lenovo\Documents\Semester 4\PABD\Praktikum\KelolaDataKP\KelolaDataKP\KelolaDataKP\bin\Debug\KelolaDataKP.exe
+C:\Users\Lenovo\Documents\Semester 4\PABD\Praktikum\KelolaDataKP\KelolaDataKP\KelolaDataKP\bin\Debug\KelolaDataKP.pdb
+C:\Users\Lenovo\Documents\Semester 4\PABD\Praktikum\KelolaDataKP\KelolaDataKP\KelolaDataKP\obj\Debug\KelolaDataKP.exe
+C:\Users\Lenovo\Documents\Semester 4\PABD\Praktikum\KelolaDataKP\KelolaDataKP\KelolaDataKP\obj\Debug\KelolaDataKP.pdb
