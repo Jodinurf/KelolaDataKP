@@ -156,7 +156,10 @@ namespace KelolaDataKP
             SqlDataReader r = cmd.ExecuteReader();
             while (r.Read())
             {
-                Console.WriteLine($"KD Surat KP: {r["KD_SrtKP"]}, NIM: {r["nim"]}, Kode Perusahaan: {r["kd_Perusahaan"]}, Nama Penerima: {r["NamaPenerima"]}, Tugas: {r["Tugas"]}, File DOC: {r["fileDOC"]}");
+                for (int i = 0; i < r.FieldCount; i++)
+                {
+                    Console.WriteLine(r.GetValue(i));
+                }
                 Console.WriteLine();
             }
             r.Close();
