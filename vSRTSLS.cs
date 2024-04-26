@@ -181,17 +181,54 @@ namespace KelolaDataKP
 
         public void update(string kdSurat, string newDisetujuiOleh, string newStatus, string newFileDOC, SqlConnection con)
         {
-            string str = "UPDATE SuratSelesaiKP SET DisetujuiOleh = @newDisetujuiOleh, status = @newStatus, fileDOC = @newFileDOC WHERE kd_Surat = @kdSurat";
+            // Buat query untuk update
+            string str = "UPDATE SuratSelesaiKP SET ";
+            List<string> parameters = new List<string>();
+
+            if (!string.IsNullOrEmpty(newDisetujuiOleh))
+            {
+                str += "DisetujuiOleh = @newDisetujuiOleh, ";
+                parameters.Add("@newDisetujuiOleh");
+            }
+
+            if (!string.IsNullOrEmpty(newStatus))
+            {
+                str += "status = @newStatus, ";
+                parameters.Add("@newStatus");
+            }
+
+            if (!string.IsNullOrEmpty(newFileDOC))
+            {
+                str += "fileDOC = @newFileDOC, ";
+                parameters.Add("@newFileDOC");
+            }
+
+            str = str.TrimEnd(',', ' ');
+
+            str += " WHERE kd_Surat = @kdSurat";
+
+            // Buat command SQL
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            cmd.Parameters.AddWithValue("@newDisetujuiOleh", newDisetujuiOleh);
-            cmd.Parameters.AddWithValue("@newStatus", newStatus);
-            cmd.Parameters.AddWithValue("@newFileDOC", newFileDOC);
+            // Tambahkan parameter baru sesuai dengan data yang diinputkan
+            foreach (string parameter in parameters)
+            {
+                if (parameter == "@newDisetujuiOleh")
+                    cmd.Parameters.AddWithValue(parameter, newDisetujuiOleh);
+                else if (parameter == "@newStatus")
+                    cmd.Parameters.AddWithValue(parameter, newStatus);
+                else if (parameter == "@newFileDOC")
+                    cmd.Parameters.AddWithValue(parameter, newFileDOC);
+            }
+
+            // Tambahkan parameter untuk ID Surat
             cmd.Parameters.AddWithValue("@kdSurat", kdSurat);
 
+            // Eksekusi command SQL
             int rowsAffected = cmd.ExecuteNonQuery();
 
+            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
@@ -201,6 +238,7 @@ namespace KelolaDataKP
                 Console.WriteLine("Data tidak ditemukan atau gagal diupdate.");
             }
         }
+
 
         public void searchByKdSurat(string kdSurat, SqlConnection con)
         {
