@@ -194,7 +194,6 @@ namespace KelolaDataKP
 
         public void update(string kdSrtKP, string newNamaPenerima, string newTugas, string newFileDOC, SqlConnection con)
         {
-            // Buat query untuk update
             string str = "UPDATE PermintaanKP SET ";
             List<string> parameters = new List<string>();
 
@@ -220,11 +219,9 @@ namespace KelolaDataKP
 
             str += " WHERE KD_SrtKP = @kdSrtKP";
 
-            // Buat command SQL
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            // Tambahkan parameter baru sesuai dengan data yang diinputkan
             foreach (string parameter in parameters)
             {
                 if (parameter == "@newNamaPenerima")
@@ -235,13 +232,11 @@ namespace KelolaDataKP
                     cmd.Parameters.AddWithValue(parameter, newFileDOC);
             }
 
-            // Tambahkan parameter untuk KD Surat KP
             cmd.Parameters.AddWithValue("@kdSrtKP", kdSrtKP);
 
             // Eksekusi command SQL
             int rowsAffected = cmd.ExecuteNonQuery();
 
-            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
