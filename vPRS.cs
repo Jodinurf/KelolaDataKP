@@ -270,7 +270,11 @@ namespace KelolaDataKP
                 Console.WriteLine("Hasil Pencarian:\n");
                 while (reader.Read())
                 {
-                    Console.WriteLine($"Kode Perusahaan: {reader["kd_Perusahaan"]}, Nama Perusahaan: {reader["NamaPerusahaan"]}, Telephone: {reader["Telephone"]}, Alamat: {reader["Alamat"]}");
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        Console.WriteLine(reader.GetValue(i));
+                    }
+                    Console.WriteLine();
                 }
             }
             else
