@@ -266,7 +266,11 @@ namespace KelolaDataKP
                 Console.WriteLine("Hasil Pencarian:\n");
                 while (reader.Read())
                 {
-                    Console.WriteLine($"KD Surat KP: {reader["KD_SrtKP"]}, NIM: {reader["nim"]}, Kode Perusahaan: {reader["kd_Perusahaan"]}, Nama Penerima: {reader["NamaPenerima"]}, Tugas: {reader["Tugas"]}, File DOC: {reader["fileDOC"]}");
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        Console.WriteLine(reader.GetValue(i));
+                    }
+                    Console.WriteLine();
                 }
             }
             else
