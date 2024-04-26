@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -180,17 +181,54 @@ namespace KelolaDataKP
 
         public void update(string idLaporan, string newNikDosen, DateTime newTanggal, string newFileDOC, SqlConnection con)
         {
-            string str = "UPDATE LaporanKP SET NIK = @newNikDosen, Tanggal = @newTanggal, fileDOC = @newFileDOC WHERE ID_Laporan = @idLaporan";
+            // Buat query untuk update
+            string str = "UPDATE LaporanKP SET ";
+            List<string> parameters = new List<string>();
+
+            if (!string.IsNullOrEmpty(newNikDosen))
+            {
+                str += "NIK = @newNikDosen, ";
+                parameters.Add("@newNikDosen");
+            }
+
+            if (newTanggal != DateTime.MinValue)
+            {
+                str += "Tanggal = @newTanggal, ";
+                parameters.Add("@newTanggal");
+            }
+
+            if (!string.IsNullOrEmpty(newFileDOC))
+            {
+                str += "fileDOC = @newFileDOC, ";
+                parameters.Add("@newFileDOC");
+            }
+
+            str = str.TrimEnd(',', ' ');
+
+            str += " WHERE ID_Laporan = @idLaporan";
+
+            // Buat command SQL
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            cmd.Parameters.AddWithValue("@newNikDosen", newNikDosen);
-            cmd.Parameters.AddWithValue("@newTanggal", newTanggal);
-            cmd.Parameters.AddWithValue("@newFileDOC", newFileDOC);
+            // Tambahkan parameter baru sesuai dengan data yang diinputkan
+            foreach (string parameter in parameters)
+            {
+                if (parameter == "@newNikDosen")
+                    cmd.Parameters.AddWithValue(parameter, newNikDosen);
+                else if (parameter == "@newTanggal")
+                    cmd.Parameters.AddWithValue(parameter, newTanggal);
+                else if (parameter == "@newFileDOC")
+                    cmd.Parameters.AddWithValue(parameter, newFileDOC);
+            }
+
+            // Tambahkan parameter untuk ID Laporan
             cmd.Parameters.AddWithValue("@idLaporan", idLaporan);
 
+            // Eksekusi command SQL
             int rowsAffected = cmd.ExecuteNonQuery();
 
+            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
@@ -200,6 +238,7 @@ namespace KelolaDataKP
                 Console.WriteLine("Data tidak ditemukan atau gagal diupdate.");
             }
         }
+
 
         public void searchByIdLaporan(string idLaporan, SqlConnection con)
         {
