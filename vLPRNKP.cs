@@ -143,7 +143,7 @@ namespace KelolaDataKP
 
         public void baca(SqlConnection con)
         {
-            SqlCommand cmd = new SqlCommand("SELECT * FROM LaporanKP", con);
+            SqlCommand cmd = new SqlCommand("SELECT * FROM Laporan", con);
             SqlDataReader r = cmd.ExecuteReader();
             while (r.Read())
             {
