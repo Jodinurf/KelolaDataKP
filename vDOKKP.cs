@@ -168,15 +168,37 @@ namespace KelolaDataKP
 
         public void update(string idDokumen, string newLogbook, SqlConnection con)
         {
-            string str = "UPDATE Dokumen_KP SET logbook = @newLogbook WHERE ID_Dokumen = @idDokumen";
+            // Buat query untuk update
+            string str = "UPDATE Dokumen_KP SET ";
+            List<string> parameters = new List<string>();
+
+            if (!string.IsNullOrEmpty(newLogbook))
+            {
+                str += "logbook = @newLogbook, ";
+                parameters.Add("@newLogbook");
+            }
+
+            str = str.TrimEnd(',', ' ');
+
+            str += " WHERE ID_Dokumen = @idDokumen";
+
+            // Buat command SQL
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            cmd.Parameters.AddWithValue("@newLogbook", newLogbook);
+            // Tambahkan parameter baru sesuai dengan data yang diinputkan
+            foreach (string parameter in parameters)
+            {
+                cmd.Parameters.AddWithValue(parameter, newLogbook);
+            }
+
+            // Tambahkan parameter untuk ID Dokumen
             cmd.Parameters.AddWithValue("@idDokumen", idDokumen);
 
+            // Eksekusi command SQL
             int rowsAffected = cmd.ExecuteNonQuery();
 
+            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
@@ -186,6 +208,7 @@ namespace KelolaDataKP
                 Console.WriteLine("Data tidak ditemukan atau gagal diupdate.");
             }
         }
+
 
         public void searchByIdDokumen(string idDokumen, SqlConnection con)
         {
