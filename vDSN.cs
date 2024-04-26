@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -183,18 +184,59 @@ namespace KelolaDataKP
 
         public void update(string oldNIK, string newNIK, string newName, string newEmail, string newNoHP, SqlConnection con)
         {
-            string str = "UPDATE Dosen SET NIK = @newNIK, nama = @newName, email = @newEmail, NoHP = @newNoHP WHERE NIK = @oldNIK";
+            // Buat query untuk update
+            string str = "UPDATE Dosen SET ";
+            List<string> parameters = new List<string>();
+
+            if (!string.IsNullOrEmpty(newNIK))
+            {
+                str += "NIK = @newNIK, ";
+                parameters.Add("@newNIK");
+            }
+            if (!string.IsNullOrEmpty(newName))
+            {
+                str += "nama = @newName, ";
+                parameters.Add("@newName");
+            }
+            if (!string.IsNullOrEmpty(newEmail))
+            {
+                str += "email = @newEmail, ";
+                parameters.Add("@newEmail");
+            }
+            if (!string.IsNullOrEmpty(newNoHP))
+            {
+                str += "NoHP = @newNoHP, ";
+                parameters.Add("@newNoHP");
+            }
+
+            str = str.TrimEnd(',', ' ');
+
+            str += " WHERE NIK = @oldNIK";
+
+            // Buat command SQL
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            cmd.Parameters.AddWithValue("@newNIK", newNIK);
-            cmd.Parameters.AddWithValue("@newName", newName);
-            cmd.Parameters.AddWithValue("@newEmail", newEmail);
-            cmd.Parameters.AddWithValue("@newNoHP", newNoHP);
+            // Tambahkan parameter baru sesuai dengan data yang diinputkan
+            foreach (string parameter in parameters)
+            {
+                if (parameter == "@newNIK")
+                    cmd.Parameters.AddWithValue(parameter, newNIK);
+                else if (parameter == "@newName")
+                    cmd.Parameters.AddWithValue(parameter, newName);
+                else if (parameter == "@newEmail")
+                    cmd.Parameters.AddWithValue(parameter, newEmail);
+                else if (parameter == "@newNoHP")
+                    cmd.Parameters.AddWithValue(parameter, newNoHP);
+            }
+
+            // Tambahkan parameter untuk NIK lama
             cmd.Parameters.AddWithValue("@oldNIK", oldNIK);
 
+            // Eksekusi command SQL
             int rowsAffected = cmd.ExecuteNonQuery();
 
+            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
@@ -204,6 +246,7 @@ namespace KelolaDataKP
                 Console.WriteLine("Data tidak ditemukan atau gagal diupdate.");
             }
         }
+
 
         public void searchByNIK(string nik, SqlConnection con)
         {
