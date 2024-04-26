@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -196,17 +197,52 @@ namespace KelolaDataKP
 
         public void update(int kdPerusahaan, string newNamaPerusahaan, string newTelephone, string newAlamat, SqlConnection con)
         {
-            string str = "UPDATE Perusahaan SET NamaPerusahaan = @newNamaPerusahaan, Telephone = @newTelephone, Alamat = @newAlamat WHERE kd_Perusahaan = @kdPerusahaan";
+            // Buat query untuk update
+            string str = "UPDATE Perusahaan SET ";
+            List<string> parameters = new List<string>();
+
+            if (!string.IsNullOrEmpty(newNamaPerusahaan))
+            {
+                str += "NamaPerusahaan = @newNamaPerusahaan, ";
+                parameters.Add("@newNamaPerusahaan");
+            }
+            if (!string.IsNullOrEmpty(newTelephone))
+            {
+                str += "Telephone = @newTelephone, ";
+                parameters.Add("@newTelephone");
+            }
+            if (!string.IsNullOrEmpty(newAlamat))
+            {
+                str += "Alamat = @newAlamat, ";
+                parameters.Add("@newAlamat");
+            }
+
+            str = str.TrimEnd(',', ' ');
+
+            str += " WHERE kd_Perusahaan = @kdPerusahaan";
+
+            // Buat command SQL
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            cmd.Parameters.AddWithValue("@newNamaPerusahaan", newNamaPerusahaan);
-            cmd.Parameters.AddWithValue("@newTelephone", newTelephone);
-            cmd.Parameters.AddWithValue("@newAlamat", newAlamat);
+            // Tambahkan parameter baru sesuai dengan data yang diinputkan
+            foreach (string parameter in parameters)
+            {
+                if (parameter == "@newNamaPerusahaan")
+                    cmd.Parameters.AddWithValue(parameter, newNamaPerusahaan);
+                else if (parameter == "@newTelephone")
+                    cmd.Parameters.AddWithValue(parameter, newTelephone);
+                else if (parameter == "@newAlamat")
+                    cmd.Parameters.AddWithValue(parameter, newAlamat);
+            }
+
+            // Tambahkan parameter untuk Kode Perusahaan
             cmd.Parameters.AddWithValue("@kdPerusahaan", kdPerusahaan);
 
+            // Eksekusi command SQL
             int rowsAffected = cmd.ExecuteNonQuery();
 
+            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
@@ -216,6 +252,7 @@ namespace KelolaDataKP
                 Console.WriteLine("Data tidak ditemukan atau gagal diupdate.");
             }
         }
+
 
         public void searchByKodePerusahaan(int kdPerusahaan, SqlConnection con)
         {
