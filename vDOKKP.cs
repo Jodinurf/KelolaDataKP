@@ -137,7 +137,10 @@ namespace KelolaDataKP
             SqlDataReader r = cmd.ExecuteReader();
             while (r.Read())
             {
-                Console.WriteLine($"ID Dokumen: {r["ID_Dokumen"]}, Logbook: {r["logbook"]}");
+                for (int i = 0; i < r.FieldCount; i++)
+                {
+                    Console.WriteLine(r.GetValue(i));
+                }
                 Console.WriteLine();
             }
             r.Close();
