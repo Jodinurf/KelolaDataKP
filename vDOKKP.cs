@@ -226,7 +226,11 @@ namespace KelolaDataKP
                 Console.WriteLine("Hasil Pencarian:\n");
                 while (reader.Read())
                 {
-                    Console.WriteLine($"ID Dokumen: {reader["ID_Dokumen"]}, Logbook: {reader["logbook"]}");
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        Console.WriteLine(reader.GetValue(i));
+                    }
+                    Console.WriteLine();
                 }
             }
             else
