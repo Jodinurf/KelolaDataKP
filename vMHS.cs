@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -66,10 +67,10 @@ namespace KelolaDataKP
                                 case '3':
                                     Console.Clear();
                                     Console.WriteLine("Masukkan Data Mahasiswa ingin dihapus:\n");
-                                    string namaHapus = Console.ReadLine();
+                                    string nimHapus = Console.ReadLine();
                                     try
                                     {
-                                        delete(namaHapus, conn);
+                                        delete(nimHapus, conn);
                                     }
                                     catch
                                     {
@@ -175,32 +176,80 @@ namespace KelolaDataKP
             Console.WriteLine("Data Berhasil Ditambahkan");
         }
 
-        public void delete(string nama, SqlConnection con)
+        public void delete(string nim, SqlConnection con)
         {
-            string str = "Delete from Mahasiswa where nama = @nm";
+            string str = "DELETE FROM Mahasiswa WHERE nim = @nim";
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            cmd.Parameters.Add(new SqlParameter("nm", nama));
+            cmd.Parameters.Add(new SqlParameter("@nim", nim));
             cmd.ExecuteNonQuery();
             Console.WriteLine("Data Berhasil Dihapus");
         }
 
+
         public void update(string oldNIM, string newNIM, string newName, string newEmail, string newPhoneNumber, string newJK, SqlConnection con)
         {
-            string str = "UPDATE Mahasiswa SET nim = @newNIM, nama = @newName, email = @newEmail, NoHP = @newPhoneNumber, JenisKelamin = @newJK WHERE nim = @oldNIM";
+            // Buat query untuk update
+            string str = "UPDATE Mahasiswa SET ";
+            List<string> parameters = new List<string>();
+
+            if (!string.IsNullOrEmpty(newNIM))
+            {
+                str += "nim = @newNIM, ";
+                parameters.Add("@newNIM");
+            }
+            if (!string.IsNullOrEmpty(newName))
+            {
+                str += "nama = @newName, ";
+                parameters.Add("@newName");
+            }
+            if (!string.IsNullOrEmpty(newEmail))
+            {
+                str += "email = @newEmail, ";
+                parameters.Add("@newEmail");
+            }
+            if (!string.IsNullOrEmpty(newPhoneNumber))
+            {
+                str += "NoHP = @newPhoneNumber, ";
+                parameters.Add("@newPhoneNumber");
+            }
+            if (!string.IsNullOrEmpty(newJK))
+            {
+                str += "JenisKelamin = @newJK, ";
+                parameters.Add("@newJK");
+            }
+
+            str = str.TrimEnd(',', ' ');
+
+            str += " WHERE nim = @oldNIM";
+
+            // Buat command SQL
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            cmd.Parameters.AddWithValue("@newNIM", newNIM);
-            cmd.Parameters.AddWithValue("@newName", newName);
-            cmd.Parameters.AddWithValue("@newEmail", newEmail);
-            cmd.Parameters.AddWithValue("@newPhoneNumber", newPhoneNumber);
-            cmd.Parameters.AddWithValue("@newJK", newJK);
+            // Tambahkan parameter baru sesuai dengan data yang diinputkan
+            foreach (string parameter in parameters)
+            {
+                if (parameter == "@newNIM")
+                    cmd.Parameters.AddWithValue(parameter, newNIM);
+                else if (parameter == "@newName")
+                    cmd.Parameters.AddWithValue(parameter, newName);
+                else if (parameter == "@newEmail")
+                    cmd.Parameters.AddWithValue(parameter, newEmail);
+                else if (parameter == "@newPhoneNumber")
+                    cmd.Parameters.AddWithValue(parameter, newPhoneNumber);
+                else if (parameter == "@newJK")
+                    cmd.Parameters.AddWithValue(parameter, newJK);
+            }
+
+            // Tambahkan parameter untuk NIM lama
             cmd.Parameters.AddWithValue("@oldNIM", oldNIM);
 
+            // Eksekusi command SQL
             int rowsAffected = cmd.ExecuteNonQuery();
 
+            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
@@ -210,6 +259,7 @@ namespace KelolaDataKP
                 Console.WriteLine("Data tidak ditemukan atau gagal diupdate.");
             }
         }
+
 
         public void searchByNIM(string nim, SqlConnection con)
         {
