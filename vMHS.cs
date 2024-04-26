@@ -190,7 +190,7 @@ namespace KelolaDataKP
 
         public void update(string oldNIM, string newNIM, string newName, string newEmail, string newPhoneNumber, string newJK, SqlConnection con)
         {
-            // Buat query untuk update
+            
             string str = "UPDATE Mahasiswa SET ";
             List<string> parameters = new List<string>();
 
@@ -224,11 +224,10 @@ namespace KelolaDataKP
 
             str += " WHERE nim = @oldNIM";
 
-            // Buat command SQL
+           
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            // Tambahkan parameter baru sesuai dengan data yang diinputkan
             foreach (string parameter in parameters)
             {
                 if (parameter == "@newNIM")
@@ -243,13 +242,11 @@ namespace KelolaDataKP
                     cmd.Parameters.AddWithValue(parameter, newJK);
             }
 
-            // Tambahkan parameter untuk NIM lama
             cmd.Parameters.AddWithValue("@oldNIM", oldNIM);
 
-            // Eksekusi command SQL
+         
             int rowsAffected = cmd.ExecuteNonQuery();
 
-            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
