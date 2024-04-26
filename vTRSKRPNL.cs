@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -174,18 +175,47 @@ namespace KelolaDataKP
             Console.WriteLine("Data Berhasil Dihapus");
         }
 
-        public void update(string nim, string jumlahSKS, string fileDOC, SqlConnection con)
+        public void update(string nim, string newJumlahSKS, string newFileDOC, SqlConnection con)
         {
-            string str = "UPDATE transkrip_Nilai SET jumlahSKS = @jumlahSKS, fileDOC = @fileDOC WHERE nim = @nim";
+            // Buat query untuk update
+            string str = "UPDATE transkrip_Nilai SET ";
+            List<string> parameters = new List<string>();
+
+            if (!string.IsNullOrEmpty(newJumlahSKS))
+            {
+                str += "jumlahSKS = @newJumlahSKS, ";
+                parameters.Add("@newJumlahSKS");
+            }
+            if (!string.IsNullOrEmpty(newFileDOC))
+            {
+                str += "fileDOC = @newFileDOC, ";
+                parameters.Add("@newFileDOC");
+            }
+
+            str = str.TrimEnd(',', ' ');
+
+            str += " WHERE nim = @nim";
+
+            // Buat command SQL
             SqlCommand cmd = new SqlCommand(str, con);
             cmd.CommandType = CommandType.Text;
 
-            cmd.Parameters.AddWithValue("@jumlahSKS", jumlahSKS);
-            cmd.Parameters.AddWithValue("@fileDOC", fileDOC);
+            // Tambahkan parameter baru sesuai dengan data yang diinputkan
+            foreach (string parameter in parameters)
+            {
+                if (parameter == "@newJumlahSKS")
+                    cmd.Parameters.AddWithValue(parameter, newJumlahSKS);
+                else if (parameter == "@newFileDOC")
+                    cmd.Parameters.AddWithValue(parameter, newFileDOC);
+            }
+
+            // Tambahkan parameter untuk NIM
             cmd.Parameters.AddWithValue("@nim", nim);
 
+            // Eksekusi command SQL
             int rowsAffected = cmd.ExecuteNonQuery();
 
+            // Beri pesan sesuai dengan hasil eksekusi
             if (rowsAffected > 0)
             {
                 Console.WriteLine("Data berhasil diupdate.");
@@ -195,6 +225,7 @@ namespace KelolaDataKP
                 Console.WriteLine("Data tidak ditemukan atau gagal diupdate.");
             }
         }
+
 
         public void searchByNIM(string nim, SqlConnection con)
         {
