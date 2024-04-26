@@ -261,7 +261,11 @@ namespace KelolaDataKP
                 Console.WriteLine("Hasil Pencarian:\n");
                 while (reader.Read())
                 {
-                    Console.WriteLine($"NIK: {reader["NIK"]}, Nama: {reader["nama"]}, Email: {reader["email"]}, No HP: {reader["NoHp"]}");
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        Console.WriteLine(reader.GetValue(i));
+                    }
+                    Console.WriteLine();
                 }
             }
             else
